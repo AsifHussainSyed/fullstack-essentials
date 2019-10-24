@@ -1,0 +1,445 @@
+
+HTTP in Angular
+
+Till now you had your data inside Service Class. But in reality, the data is present in a remote server, which you can get using HTTP calls to APIs.
+
+In Angular you can use HttpClient API to make HTTP requests to backend services.
+
+So let us understand how to fetch data from server.
+
+The component will call its service
+Service will invoke http get method. This will send request from your web browser to server, asking server to send data.
+The server will send the data to your web browser as a HTTP Response
+The response that the "service" will get from HTTP service, is an Observable. So the component has to subscribe the service to receive the data.
+
+------------------------------------------------------------------------------------
+
+Observables
+Observables are a sequence of values that arrive in asynchronous mode over time. You can say it works like an array. It is similar to promises in Angular1.x, but the major difference between Observables and Promises are:
+
+Promise returns only a single value when called once whereas Observables return multiple values
+Observables can be cancelled whereas Promises cannot
+
+
+
+
+------------------------------------------------------------------------------------
+
+Observables Sample
+
+Lets have a look at this sample code to understand how you can create an Observable in Angular:
+
+ import {Observable} from 'rxjs/Observable';
+
+ export class MyApp {
+    private data: Observable<Array<number>>;
+
+    init() {
+       this.data = new Observable(observer => {
+           setTimeout(  () => observer.next(42), 1000  );
+       }); // this will emit value 42, every 1000ms
+   
+       let subscription = this.data.subscribe( res => console.log(res) );
+    }
+ } 
+You need to import Observable into component from rxjs/Observable
+You create a new Observable inside constructor
+Then call subscribe on this Observable which allows you to listen to any data that is coming through
+Remember to Unsubscribe from observables in ngOnDestroy() lifecycle, else your application might have memory leaks
+
+
+
+
+------------------------------------------------------------------------------------
+
+
+What are Routers?
+
+Router in Angular defines route to navigate from one view to another, as user performs task on the application.
+
+Routers are used to develop 'Single Page Application'
+
+Traditionally websites used to load the whole webpage, on cliking any of the links. This increases page load time, bandwidth consumption affecting user-experience
+Now you can just load the required view, instead of sending the request to server to send a whole new webpage
+This saves bandwidth, page load time and improves user-experience
+The good thing is, you can trace back the history of navigations, and bookmark paticular view. This is achieved using path, which is visible in the URL
+
+
+
+
+------------------------------------------------------------------------------------
+Routing and Navigation
+
+For defining Routers, you first need to import RouterModule and other required component in app.module.ts, that will be loaded/routed in the webpage as shown in the sample code below.
+import { RouterModule, Routes } from '@angular/router';
+
+const appRoutes: Routes = [
+   {path: '/my-cources', component: MyCourcesComponent },
+   {path: '/explore', component: ExploreComponent }
+];
+
+@NgModule({
+  imports: [ RouterModule.forRoot(appRoutes) ],
+})
+path: this defines the URL path in your browser address bar
+component: this defines which component should be loaded
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Routing and Navigation
+
+Let us now define routerLink and router-outlet in template.
+
+routerLink defines the "path" of the "anchor tag". (i.e), when a link is clicked, which "path" should be displayed in URL and which "component" is to be loaded.
+router-outlet defines the location on webpage where the component is to be loaded.
+ <nav> 
+   <a routerLink= "/my-cources" > My Cources </a>
+   <a routerLink= "/explore"> Explore </a>
+ </nav>
+ <router-outlet></router-outlet>
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Parameterised Routing
+
+In Parameterised Routing, you have a variable in path (url), that accepts "parameter".
+
+For example, (in Fresco Play) if you click any category, say, Data Science in Explore, it will show the details of that category and the path can be ---.com/explore/data-science. So you can write routes to look like:
+
+ const routes: Routes = [
+     { path: 'explore/data-science', component: DataScienceComponent },
+     { path: 'explore/devops', component: DevopsComponent }
+     and so on..... 
+ ];
+But this could get messy, if we have a lot of categories in Explore. A better approach can be:
+
+ const routes: Routes = [
+  { path: 'explore/:category', component: ExploreDetailsComponent }
+ ];
+Short and Sweet, is it not?
+
+:category is a variable, as it starts with : (colon)
+:category is palceholder for PARAMETER that will have category name.
+You can have any number of variables in path, as long as they begin with : and have different name.
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+Non-Parameterised Routing
+
+Non-parameterised Routing always has higher priority over "Parameterised" Routing. Let us consider the example:
+
+ const routes: Routes = [
+  { path: 'explore/:category', component: ExploreDetailsComponent },
+  { path: 'explore/settings', component: ExploreSettingsComponent }
+ ];
+settings does not start with :, hence is non-parameterised.
+Even if ExploreSettingsComponent "path" matches with explore/:category, precedence is given to explore/settings (non-parameterised). So, ExploreSettingsComponent is loaded instead of ExploreDetailsComponent.
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Reading Parameterised Routing
+The ExploreDetailsComponent should first read the parameter, then load the details based on the :category given in the parameter.
+
+This is achieved using ActivatedRoute service.
+To use it, you first need to import it. Then inject it into the constructor of ExploreDetailsComponent.
+It provides a params Observable which you can subscribe to receive the route parameters.
+ import {ActivatedRoute} from "@angular/router";
+
+ constructor(private route: ActivatedRoute) {
+     let category = this.route.snapshot.paramMap.get('category');
+
+
+
+------------------------------------------------------------------------------------
+
+Child Routes
+
+In certain scenarios, certain routes should be available only when other routes are present.
+
+For example you would want SpecficationComponent to load only when a mobile is selected (--.com/mobiles/423134/spec).
+
+In such scenarios, its better to create them as child routes. The following video will explain you more about ChildRoutes
+
+
+
+
+------------------------------------------------------------------------------------
+
+Types of Forms in Angular-II
+
+Forms are vital part of any real application.
+
+There are two Types of Forms in Angular:
+
+Template Driven Forms (TDF)
+Reactive (or Model Driven) Forms
+Model Driven Forms (MDF) - with FormGroup and FormControl
+Model Driven Forms (MDF) - with FormBuilder
+
+
+
+
+------------------------------------------------------------------------------------
+
+Creating TDF- Inside AppModule
+
+Let us understand how to create Template Driven Forms
+
+In app.module.ts
+
+import FormsModule - @angular/forms
+add FormsModule into import metadata
+import {FormsModule}				
+
+@NgModule({
+    imports: [BrowserModule, FormsModule],
+    .....
+    .....
+})
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Creating TDF- Inside AppComponent
+
+In app.component.html
+
+Create a form, provide link in app.component.ts under templateUrl
+    <form #form="ngForm" (ngSubmit)="onSubmit(form.value)">	//ngForm, ngSubmit
+            <label>Name:</label>
+            <input type="text" name="name" ngModel>			//ngModel
+            ......
+            ......
+            ......
+            <div ngModelgroup="address">					//ngModelgroup
+            	Street: <input type="text" name="name" ngModel>
+            	City: 
+            	....
+            	....
+            </div>
+    </form>
+ngForm directive gives value of Form Fields. And tells you if the form is in valid/invalid state
+ngSubmit event is fired when a user clicks on Submit button.
+ngModel directive creates the FormControl instance to manage the template form control. It also lets you setup two-way data binding between variable in component and form-control in template. <input type="text" name="name" [(ngModel)]="someName">
+ngModelgroup directive logically group the form fields under one name. For example: Street, City, Country, Zip etc can be grouped in Address
+
+
+
+
+------------------------------------------------------------------------------------
+
+Validating TDF
+The attributes you use to validate form controls are mostly parts of standard HTML5 and not angular. For example: required, minlength etc.
+
+Angular provides many classes that are automatically attached to form controls, but are hidden. You can view them using interpolation {{}} as shown
+
+	Name: <input type="text" #refName name="name" ngModel>
+    {{refName.className}} //this will show all the classes applied to #refName 
+The classes provided by Angular are:
+
+ng-valid: field value is valid
+ng-invalid: field value is invalid
+ng-untouched: field is not yet clicked
+ng-touched: field is visited by user atleast once
+ng-pristine: field value is the default value
+ng-dirty: field value is changed from the default value
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Validating TDF- Pairing Classes
+You can use these pairs in many combinations, to change style in CSS or provide feedback to user.
+
+ng-valid / ng-invalid
+ng-untouched / ng-touched
+ng-pristine / ng-dirty
+	Name: <input type="text" #refName="ngModel" required name="name" ngModel>
+	<div [hidden]="refName.valid || refName.pristine">
+		Please enter a name
+	</div>
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Creating MDF-Inside AppModule
+
+A Model Driven Form is pretty much like Template Driven. But here you need to import a different module ReactiveFormsModule instead of FormsModule.
+
+In app.module.ts, import ReactiveFormsModule and add it in "import" metadata
+
+import { ReactiveFormsModule } from '@angular/forms';	
+
+@NgModule({
+    imports: [ ReactiveFormsModule ],
+})
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Creating MDF-Inside AppComponent
+In app.component.ts
+
+import FormGroup, FormControl
+define FormGroups and FormComponents inside class
+export class AppComponent {
+    form= new FormGroup({
+        name: new FormControl(),
+        .....
+        address: new FormGroup({
+          street: new FormControl(),
+          city: new FormControl()
+        })
+    });
+}
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Creating MDF-Inside Template
+In app.component.html
+
+Create a form with formGroup, formGroup, formComponentName and formComponent and provide link in templateUrl
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label>Name:</label>
+    <input type="text" formControl="name">
+    ......
+    ......
+    <div formGroupName="address">
+      Street: <input type="text" formControl="street">
+      City:   <input type="text" formControl="city">
+      ....
+      ....
+    </div>
+</form>
+
+
+------------------------------------------------------------------------------------
+
+MDF – With FormBuilder
+In Model Driven Form, you might have felt a lot of coding, typing and wording. You had to call new FormGroup() and new FormControl() frequently. Now you can give a little rest to your hand, as we now have a laboratory called FormBuilder, which creates FormGroup and FormControl.
+
+All you have to do is import FormBuilder, FormGroup and call .group() method as shown
+
+In app.component.ts
+
+export class AppComponent {
+  form: FormGroup;
+  constructor(fb: FormBuilder){
+    this.form = this._fb.group({
+      name: ['', [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(10)] ],
+      .....
+      address = this._fb.group({
+        street: [],
+        .....
+      })
+    });
+  }
+}
+
+
+
+
+------------------------------------------------------------------------------------
+
+
+In Model Driven Form, you need to import Validators to validate the form.
+
+In app.component.ts
+
+export class AppComponent {
+  form= new FormGroup({
+      name: new FormControl([ 
+            Validators.required,
+            Validators.minLength(4),
+            Validators.maxLength(10) 
+          ]),
+  });
+}
+
+
+
+
+------------------------------------------------------------------------------------
+
+
+Name: <input type="text" #refName formControlName="name">
+
+<div *ngIf="name.invalid && (name.dirty || name.touched)">
+	<div *ngIf= " name.errors.required  "> Please enter a name </div>
+	<div *ngIf= " name.errors.minlength "> Minimum Length: 4 </div>
+</div>
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+Best Practices
+
+Use _(underscore) before a private member and $ after an observable, improves readability. Example: _courseService , actionSubjects$
+One component per file makes it far easier to read, maintain, and avoid collisions with teams in source control.
+Use dashes to separate words in the descriptive name.
+Use conventional type names including .service, .component, .pipe, .module, and .directive.
+Use dots to separate the descriptive name from the type. Example: file-name.component.ts, ----.service.ts etc.
+Put bootstrapping and platform logic for the app in a file named main.ts.
+Avoid putting app logic in main.ts. Instead, consider placing it in a component or service.
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------

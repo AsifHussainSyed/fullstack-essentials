@@ -1,0 +1,231 @@
+Why Angular 2?
+Easy: Unlike previous versions, Angular 2 focuses only on building JavaScript classes; hence it is easier to learn.
+Freedom: It provides more choices of languages for consumption i.e. ES5, ES6, Typescript, and Dart. TypeScript is recommended here.
+Flexible: It is a Cross-platform framework.
+Faster: Because of server side rendering.
+Simpler: Component based approach with no controllers and $scope.
+Performance: Uses Hierarchical Dependency Injection system, which is a performance booster.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Module - Example
+This is a sample code for module.
+
+ import { NgModule } from '@angular/core';
+ import { BrowserModule } from '@angular/platform-browser'; 
+ @NgModule({
+  imports: [BrowserModule],
+  declarations: [AppComponent],
+  bootstrap: [AppComponent]
+ })
+ export class AppModule { }  
+ // AppModule Class is now defined as Module : @NgModule
+Trick to identify Root Module is that it imports "BrowserModule". Other modules of that same application imports "CommonModule".
+imports:[...] - define array of modules required to build application here.
+declarations:[...] - define components, directives and pipes for this module here.
+bootstrap:[...] - define root component of this module here.
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+What is Component?
+A component is the basic block of angular 2 app.
+It handles the view part of the app and has the core logic of the page.
+It can render the view by itself based on the dependency Injection.
+There can be only one component per DOM element (i.e. only one selector element).
+Element's behavior can be manipulated by the properties associated with corresponding component.
+It can be identified using the decorator @Component.
+Components can be created, updated or destroyed based on the user actions on the page.
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+What is Template?
+Template is a simple HTML code that creates view for a component, which you can dynamically manipulate.
+
+There are two ways to define templates:
+
+template
+templateUrl
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+How to use Template?
+
+When template is used, it defines code in the same file
+
+ import {Component} from 'angular2/core';
+ @Component({
+    selector: 'greet',
+    template: ` 
+    //this defines template for 'greet' component
+         <h1>Hello There!!!</h1>
+         <h2>Have a nice day.</h2>
+    ` // back tick symbol (~ key on your  keyboard)
+    //back tick is explained in detail in TypeScript
+ })
+ export class GreetApp {}
+
+When templateUrl is used, the code is defined in different files and URL of the corresponding files are referred.
+
+    import {Component} from 'angular2/core';
+ @Component({
+    selector: 'greet',
+    templateUrl: 'app.component.html'
+    //this defines "URL to the external file"
+    that defines template for 'greet' component
+ })
+ export class GreetApp {}
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+What is Data Binding?
+
+It is the process of automatic synchronization of view and business logic. It helps in connecting the Template (view - what user sees) with Component (back end data/source).
+
+There are four ways you can bind a data to the DOM depending on the direction the data flows.
+
+Data flows into the view by Interpolation and Property Binding.
+Data flows outside the view into the class by Event Binding.
+Data flows both ways by Two-Way Data Binding.
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Event Binding
+User interaction on view generates "Events" that make data flow from "Template" to "Component". It is defined using () paranthesis. The following video will explain Event Binding in detail.
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+What are Directives?
+Directive is a class with @Directive decorator. They make DOM elements dynamic, by changing their behavior.
+
+Directive is of three types: Structural, Attribute and Component.
+
+
+Structural Directive
+They manipulate the DOM elements. i.e. Delete or update the elements. This changes the structure of webpage.
+
+Some of the built-in structural directives, Angular 2 offers are NgIf, NgFor and NgSwitch.
+
+Example: <div *ngIf="employee">{{employee.name}}</div>
+
+
+
+Attribute Directive
+These directives add styling by manipulating the Attributes of DOM element. They do not change the structure of webpage.
+
+
+NgStyle and NgClass are some of the built-in attribute directives, Angular 2 provides.
+[ngStyle], [ngClass]
+
+Technically Components is a subset of directives except the fact that they have a mandatory template parameter.
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+What is Service?
+Services are functions that are designed to complete a specific task. If you want to bring external data from server into your app or perform some repetitive task, then services come handy.
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+How to use Services?
+How to use Services?
+
+Create a file <serviceName>.services.ts.
+Import injectable from @angular/core.
+Create a class with the required function and use the decorator @injectable() to specify that it is a service.
+Then import the service in root component, which is discussed in Dependency Injection.
+Example: This simple service will perform add operation whenever it is used.
+
+    import {Injectable} from 'angular2/core';
+    
+    @Injectable()
+    export class MyService {
+        addFunction(a,b){ return a+b; }
+    }
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+What is Dependency Injection?
+
+
+Dependency Injection is a way to "Inject" the parameters or services (dependencies), on which the new Instance is "Dependent" for its creation. How the dependencies are created is not a point of concern for the instance consuming the dependency.
+
+Angular finds which services are required to the component, by looking at the "type" of component's constructor parameters.
+Angular then checks for the service in Injector, which makes a container of all services that have already been created.
+You will learn more about Services and Dependency Injection in detail in a different course.
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Now, it is time to build your own app with what you have learnt so far.
+
+Create a page as shown in the picture. Have the following elements in your app.
+
+Header
+Label – Display ONLY IF there are no activities
+Text Input box
+Button 1 – To add an activity
+Button 2 – To clear all activities
+
+You should be able to add a list of activities, where the activities are displayed along side a checkbox.
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
