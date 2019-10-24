@@ -1,0 +1,724 @@
+What is State?
+
+
+State is a snapshot of the application at any certain point of time.
+
+For example, the current state of an application can tell us a lot of things like:
+
+If a button is clicked or not.
+
+User input, such as form submissions, filters and search queries.
+
+What is the active route in a website?
+
+Server response and cached data.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Why State Needs Management?
+In larger Angular applications, you will have a lot of asynchronous activities and lots of states that will be shared and manipulated among different modules and components.
+
+In an application, typically you need to manage:
+
+UI states like alerts, and toggles.
+
+User inputs, such as forms, and search.
+
+Data coming from the server, and check if it is pending or caused any error.
+
+Custom themes.
+
+And much more.
+
+As the application grows, how do you know that a state change in one module will consistently and accurately reflect in other modules?
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+State Management in Angular 2
+As it is evident from the image, Redux is inspired from Flux and Ngrx is inspired from Redux.
+
+There are two popular ways to implement State Management in Angular 2:
+
+Using RxJS - @ngrx/store
+
+Using Redux - ng2-redux
+
+We will be using @ngrx/store in this course.
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+What is @ngrx/store?
+
+@ngrx/store, powered by RxJS, is a State Management Library especially designed for Angular 2 to deliver consistent and performant applications.
+
+It is inspired by Redux:
+
+Single store
+
+Unidirectional data flow
+
+Immutability
+
+Action
+
+and others that control the view.
+
+You will be learning in detail about these in upcoming cards.
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Main Parts of State Management
+
+Any application implementing state management will have following items:
+
+Store
+
+Action
+
+Reducers
+
+State
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Understanding Items Of States
+
+Let us understand each item in detail considering an example of Counter App.
+
+The app will have some initial state (State 1)
+
+User interaction with application generates actions like INCREMENT / DECREMENT that increases or decreases the count
+
+Depending on the action type, reducer updates the store with state 2 or state 3
+
+That updated store changes users view
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+What is Store?
+Store is one single entity where you can combine the state of whole web application, and acts as a database for the application
+
+This can be altered only through reducers by dispatching actions
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+What are Actions?
+Actions are simple objects that are dispatched to reducers when a user interacts with the application.
+
+These describe state changes to your application.
+
+Action is composed of type and payload
+
+export interface Action {
+	type: string;
+	payload?: any;
+}
+Type property is a string that uniquely identifies your action to your application.
+
+Payload has ? symbol, meaning this property is optional. It can be an object that passes additional data.
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+What are Reducers?
+
+If you consider store as your database, reducers will be the tables.
+
+Reducers are the slices of application structure that have a particular state.
+
+It is a Pure Function that defines how the slice (state) will be changed when an action is dispatched.
+
+You might wonder what is Pure Function?
+
+Read on to discover.
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Reducer and State
+State of the application can be changed only through reducers, which
+
+Take action and old state as its two arguments.
+
+Perform some logic depending on action type, and
+
+Return new state as defined in interface below:
+
+let reducer: Reducer<number> = 
+(state: State, action: Action) => {
+      switch(action.type){
+         return state; 
+      }
+};
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Pure Functions
+Pure Functions do not change the provided value and give the same output always, when the same value is given multiple times.
+
+Hence they are immutable, have no side effects and are easy to test.
+
+Example: return (value + 1)
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Impure Functions
+
+
+
+Impure Functions change the provided value and give different output, when the same value is given multiple times.
+
+Hence they are mutable, have side effects and are difficult to test.
+
+Example: return (value++)
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Unidirectional Flow
+
+In Angular 2 State Management the data flow is Unidirectional flow which means:
+
+The state update is initiated only through dispatched actions
+
+These actions are used by reducers to update store, which changes subscribed views
+
+All the updates are centralized
+
+No other view/component is affected until it has subscribed the store for changes
+
+Testing becomes easy
+
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Summarizing
+
+User interaction on application dispatches action that will be handled by reducer to generate new state, which will be stored in store.
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Step by Step
+Steps to code your application:
+
+1.state: initialize your state
+
+2.actions: define the action types
+
+3.reducer: define what to do for each type of action
+
+4.store: inside the store, do the following:
+
+inject store in AppComponent
+
+read data
+
+dispatch events.
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Environment Setup
+Open Command Prompt, go to the location where you want to keep your project and type the following commands:
+
+Create new project
+ng new Counter
+
+go inside the project folder and install ngrx
+npm install @ngrx/core @ngrx/store --save
+
+Now, to test your app while developing, enter: ng serve
+You can now view your app inside your browser at http://localhost:4200.
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+State
+For Counter, the interface of State will have just one variable of type number to store the number of counts.
+
+You need to define an interface of state and initial state.
+
+file: state.ts
+export interface State {
+  counter: number;
+};
+export const intitialState: State = {
+  counter: 10,
+};
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Actions
+You will have two types of interactions with the app, to increase and decrease the counter value.
+
+So, you need to define different types of actions as string.
+
+file: action.ts
+export const INCREMENT : string = "INCREMENT";
+export const DECREMENT : string = "DECREMENT";
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Required Imports For Your Reducer
+Reducer catches action type and updates state. You need to
+
+import {ActionReducer, Action} from "@ngrx/store";
+
+import required state and actions
+
+define what to do for respective action type
+
+import {ActionReducer, Action} from '@ngrx/store';
+import State, actions
+....
+	actionType1: do something;
+	actionType2: do something;
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Reducers
+The following is complete code of reducer for your Counter App.
+
+file: reducer.ts
+import { ActionReducer, Action } from "@ngrx/store";
+import { State, initialState } from "../state/state";
+import { INCREMENT, DECREMENT } from "../actions/action";
+export const mainStoreReducer: ActionReducer<State> =
+    (state = initialState, action: Action) => {
+    console.log('Action came in ' + action.type);
+   switch(action.type) {
+      case INCREMENT: {
+        return {
+          counter: state.counter + 1
+        }
+      }
+     case DECREMENT: {
+        return {
+          counter: state.counter - 1
+        }
+      }
+      default: {
+        return state;
+      }
+    }
+};
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Defining Reducer in AppModule
+To make your reducer available to all your components, do the following in AppModule:
+
+import { StoreModule }
+import reducers
+define StoreModule.provideStore({ reducers here }) inside imports
+import { StoreModule } from "@ngrx/store";
+import reducers
+.....
+imports: [... , StoreModule.provideStore({.....}) ],
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Reducers in AppModule
+The following is complete code to supply your reducers to whole module of the app.
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { AppComponent } from './app.component';
+import { mainStoreReducer } from "./state/reducers/reducer";
+import { StoreModule } from "@ngrx/store";
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpModule,
+    StoreModule.provideStore({mainStoreReducer})
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Recap
+Let us summarize what we learnt
+
+Defined State and Initial State of your app
+
+Defined different types of actions
+
+Reducer is importing actions and state to create new state
+
+Defined reducers in AppModule
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Injecting Store into Smart Component
+Inside AppComponent
+
+import { Store } from "@ngrx/store";
+
+import required state and actions
+
+constructor (private store:Store<State>)
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Reading Changes in Store
+You need to select the reducer to observe and subscribe to the changes.
+
+store.select() is a function that takes the name of the reducer and returns its state as shown:
+
+store.select('mainStoreReducer')
+      .subscribe( (data:State ) => {
+        this.data = 'Counter value is ' + data.counter;
+      });
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Dispatching Actions
+When you click on INCREMENT or DECREMENT button, it generates (click) events.
+
+This will dispatch the corresponding action to be handled by any and all reducers whose switch statement is expecting that particular action.
+
+decrement(){
+    this.store.dispatch({type: DECREMENT});
+}
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Your Store
+This is how your final store would look inside your master component.
+
+file: app.component.ts
+import { Component } from '@angular/core';
+import { Store } from "@ngrx/store";
+import { State } from "./state/state/state";
+import { INCREMENT, DECREMENT } from "./state/actions/action";
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'app works!';
+  data = '';
+  increment(){
+    this.store.dispatch({type: INCREMENT});
+  }
+  decrement(){
+    this.store.dispatch({type: DECREMENT});
+  }
+  constructor (private store:Store<State>){
+    console.log(store);
+    store.select('mainStoreReducer')
+      .subscribe( (data:State ) => {
+        this.data = 'Counter value is ' + data.counter;
+      });
+  }
+}
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Introducing Component Siblings
+Consider a scenario where you want to have a separate counter to calculate the number of times a user clicked on a blue or red button.
+
+To make your components more generic and reusable, you need to remake them as two siblings, viz: Smart Component and Dumb Component.
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Smart Component
+Smart component interacts with the server/cloud and perform some logic on data received through Services.
+
+They maintain their own state.
+
+export class AppComponent {
+  counter$: Observable<Counter>;
+  constructor(
+    counterService: CounterService,
+    public actions: CounterActions
+  ) {
+    this.counter$ = counterService.getCounter();
+  }
+}
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------D--
+
+Dumb Component
+
+Dumb component is used only to present all the data and controls on the screen they received from the Smart component.
+
+That is why they are mostly referred as presentational components.
+
+Dumb components do not have a state of their own
+
+Dumb components are unaware of the logic to be executed when a user interacts with the app
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Dumb Component
+They get data from Smart Component using @Input
+
+Communicate events to Smart component as @Output as shown:
+
+export class CounterComponent {
+  @Input()
+  counter: Counter;
+  @Output()
+  onIncrement = new EventEmitter<void>();
+  @Output()
+  onDecrement = new EventEmitter<void>();
+  @Output()
+  onReset = new EventEmitter<void>();
+}
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+What are Async Calls?
+Let us consider a scenario where you went to a restaurant with your friends.
+
+You give your order, pay the amount and go back to your table. The food will be served to your table once it is prepared. Meanwhile, you can do anything you want.
+
+Similarly, Async calls are made to perform some API calls, for example, database query. The request is sent to the database. The callback will be executed on query completion. A callback is a code that will get executed when the first operation is complete.
+
+Async calls have time lag, as it takes the time to fetch data from outside world.
+
+It gives less load on the server compared to Synchronous calls.
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+What are Side Effects?
+Side effects are any code that interacts with the outside world i.e. when your app interacts with other app or api using async calls.
+
+You are unaware how they behave when you run that code.
+
+For example: HTTP requests, web socket messages etc.
+
+Writing your code without side effects make them easier to test.
+
+To work around such scenarios @ngrx provides a library called @ngrx/effects.
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+What is @ngrx/effects?
+@ngrx/effects is a side effects model for ngrx/store. Depending on how side effects behave, it will deliver those actions back to the store.
+
+It acts as the middleware, used to handle asynchronous operations.
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+How to Implement @ngrx/effects?
+Install ngrx/effects using Angular CLI
+npm install @ngrx/effects --save.
+
+Tell your application that you want to use effects:
+Within imports array in your @NgModule call function EffectsModule.run().
+
+Create An Effects Class
+@Injectable()
+export class MainEffects {	
+    constructor(private action$: Actions) { }
+}
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+How Effects Work?
+You define effects using decorator @Effect().
+
+At its crux, @Effect() is just an Angular's Service Class.
+
+You create a single Effect Class that contains various @Effect() functions. Each function corresponds to an action dispatched by your ngrx store.
+
+@Injectable()
+export class CounterEffects {	
+	constructor(
+          private actions$: Actions
+	) {}
+    @Effect() 
+    increment$ = this.actions$
+	    .ofType(INCREMENT)
+	    .switchMap(do something)
+	    .map(do something)
+    ;
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Counter App With @Effect
+Considering the same counter app example, you can redefine the app to handle async calls as shown:
+
+@Effect() 
+updateCounterEffect = this.action$
+    .ofType(UPDATE_COUNTER_AFTER_DELAY)
+    .map(toPayload)
+    .switchMap(payload =>
+      Observable.timer(payload.seconds * 10000)
+        .switchMap(() =>
+          Observable.of({type: INCREMENT})
+        )
+    )
+Now, you will INCREMENT counter value after some delay (here 10 seconds)
+
+As delay is an async call, @Effect function of the corresponding action will be called
+
+Action INCREMENT will be dispatched to reducer after 10s
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Goody With State Management
+Redux way of managing states has special benefits while testing.
+
+Now testing reducers have become easy as they are pure functions and do not produce any side effects.
+
+You start with an initial state and when you dispatch an action, you know exactly what would be the output.
+
+Testing would be covered separately as a different course in Angular 2 journey later.
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Summary
+Hope you had some takeaway from this course.
+
+Let us quickly recap what you learnt in this course:
+
+Redux way of managing state using RxJS.
+
+How actions are generated and how they are consumed by reducers to generate new states.
+
+Making a sample app implementing state management.
+
+@ngrx/store: for state management and to help make performant, consistent applications on top of Angular.
+
+@ngrx/effects: to remove side effects from your UI.
+
+Popular methods and practices followed by developers across the globe.
